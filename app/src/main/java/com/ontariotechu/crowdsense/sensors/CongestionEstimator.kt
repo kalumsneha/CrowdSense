@@ -44,9 +44,17 @@ object CongestionEstimator {
         // 5. Accel variance fallback score (detects slow movement)
         val motionVarianceScore = when {
             accelVariance >= 0.03 -> 0  // Higher motion = less congestion
-            accelVariance >= 0.01 -> 1
-            else -> 2
+            accelVariance >= 0.01 -> 2
+            else -> 3
         }
+
+        // 7. NEW: Slow walking fallback suspicion score
+        val slowWalkingPenalty = if (
+            stepRate < 0.3f &&
+            speed in 0.03f..0.2f &&
+            accelVariance < 0.02 &&
+            nearbyDevices >= 3
+        ) 2 else 0
 
 
         // 6. Stationary but crowded
@@ -54,10 +62,11 @@ object CongestionEstimator {
 
         // Total congestion score
         val congestionScore =
-            crowdFactor + stopScore + speedScore + stepScore + stationaryPenalty + motionVarianceScore
+            crowdFactor + stopScore + speedScore + stepScore + stationaryPenalty
+            + motionVarianceScore + slowWalkingPenalty
 
         val level = when {
-            congestionScore >= 6 -> "High"
+            congestionScore >= 5 -> "High"
             congestionScore >= 3 -> "Medium"
             else -> "Low"
         }

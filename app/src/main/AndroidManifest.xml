@@ -30,6 +30,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_API_KEY" />
 
+        <activity android:name=".ReportDashboardActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -39,6 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -36,6 +36,33 @@
         android:background="#f5f5f5"
         />
 
+    <TextView
+        android:id="@+id/ssidText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SSID: --"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#f5f5f5"
+        />
+
+
+    <TextView
+        android:id="@+id/locationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Location: --"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#f5f5f5"
+        />
+
 
     <Spinner
         android:id="@+id/userCongestionSpinner"
@@ -48,6 +75,7 @@
         android:padding="8dp"
         />
 
+
     <Button
         android:id="@+id/reportButton"
         android:layout_width="wrap_content"
@@ -59,6 +87,7 @@
         android:textColor="#FFFFFF"
         android:elevation="4dp"
         />
+
 
     <TextView
         android:id="@+id/statusLabel"

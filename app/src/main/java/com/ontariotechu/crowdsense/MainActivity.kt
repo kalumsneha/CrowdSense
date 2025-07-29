@@ -1,5 +1,8 @@
 package com.ontariotechu.crowdsense
 
+//Firebase Realtime Database
+
+// For Firebase Database listeners
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.ScanCallback
@@ -10,43 +13,41 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.widget.Spinner
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.*
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.ontariotechu.crowdsense.data.CongestionResult
+import com.google.firebase.database.ValueEventListener
 import com.ontariotechu.crowdsense.sensors.CongestionEstimator
+import com.ontariotechu.crowdsense.data.CongestionResult
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
-
-import android.provider.Settings
-
-//Firebase Realtime Database
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.net.wifi.WifiManager
-import android.net.wifi.WifiInfo
-
-// For Firebase Database listeners
-import com.google.firebase.database.DatabaseReference
+import android.view.Menu
+import android.view.MenuItem
+import android.content.Intent
+import com.ontariotechu.crowdsense.ReportDashboardActivity
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
+
 
     enum class PostureState {
         UNKNOWN,
@@ -73,6 +74,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var congestionText: TextView
     private lateinit var reportButton: Button
     private lateinit var congestionSpinner: Spinner
+    private lateinit var ssidText: TextView
+    private lateinit var locationText: TextView
 
     private var stepCount = 0
     private var lastStepValue = -1f
@@ -102,6 +105,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        ssidText = findViewById(R.id.ssidText)
+        locationText = findViewById(R.id.locationText)
+
         congestionText = findViewById(R.id.congestionText)
         postureText = findViewById(R.id.postureText)
 
@@ -110,9 +116,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         reportButton.setOnClickListener {
             val selectedLevel = congestionSpinner.selectedItem.toString()
-            logUserReportedCongestion(selectedLevel)
             reportCongestionToFirebase(selectedLevel)
-            Toast.makeText(this, "Reported $selectedLevel congestion. Thank you!", Toast.LENGTH_SHORT).show()
         }
 
         checkAndRequestPermissions()
@@ -338,6 +342,22 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         postureText.text = "Posture: $currentPosture"
         postureText.setTextColor(android.graphics.Color.BLACK)
 
+        // Show SSID
+        val ssid = getCurrentWifiSSID()
+        ssidText.text = "SSID: $ssid"
+
+        // Show Location
+        getCurrentLocation { location ->
+            if (location != null) {
+                val lat = String.format("%.5f", location.latitude)
+                val lon = String.format("%.5f", location.longitude)
+                locationText.text = "Location: $lat, $lon"
+            } else {
+                locationText.text = "Location: Unknown"
+            }
+        }
+
+
         //Log entry
         val timestamp = System.currentTimeMillis()
         val line = "$timestamp,$stepRate,$avgSpeed,$stopCount,${nearbyDevices.size},$isSitting,$currentPosture\n"
@@ -476,6 +496,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
 
         val ssid = getCurrentWifiSSID()
+        logUserReportedCongestion(level)
+
         getCurrentLocation { location ->
 
             val database = FirebaseDatabase.getInstance().getReference("reports")
@@ -492,6 +514,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
 
             database.push().setValue(report)
+
+            // Show success toast here
+            runOnUiThread {
+                Toast.makeText(this, "Reported $level congestion. Thank you!", Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -655,6 +682,24 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }, null)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_view_reports -> {
+                val intent = Intent(this, ReportDashboardActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 

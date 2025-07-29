@@ -1,0 +1,51 @@
+*.iml
+.gradle
+/local.properties
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Firebase config
+**/google-services.json
+
+# Android Studio & IntelliJ
+.idea/
+
+# Gradle
+.gradle/
+build/
+**/build/
+local.properties
+.gradle/
+gradle-app.setting
+gradlew
+gradlew.bat
+
+# Logs and debug info
+*.log
+*.stacktrace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Kotlin specific
+*.kotlin_module
+
+# Crashlytics/Firebase
+fabric.properties
+crashlytics.properties
+
+# Generated files
+/captures/
+/outputs/
+/navigation.json
+
+# VSCode (if used)
+.vscode/
+
+# Test results
+test-output/

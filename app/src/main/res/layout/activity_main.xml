@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="24dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/congestionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Initializing..."
+        android:textSize="22sp"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="#4CAF50"
+        android:elevation="4dp"
+        android:layout_marginBottom="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/postureText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Posture: --"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#f5f5f5"
+        />
+
+
+    <Spinner
+        android:id="@+id/userCongestionSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:entries="@array/congestion_levels"
+        android:spinnerMode="dropdown"
+        android:background="@android:drawable/btn_dropdown"
+        android:padding="8dp"
+        />
+
+    <Button
+        android:id="@+id/reportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Congestion"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:backgroundTint="#1976D2"
+        android:textColor="#FFFFFF"
+        android:elevation="4dp"
+        />
+
+    <TextView
+        android:id="@+id/statusLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensors Active"
+        android:textSize="16sp"
+        android:textColor="#4CAF50"
+        android:layout_marginTop="8dp" />
+
+
+
+
+
+</LinearLayout>

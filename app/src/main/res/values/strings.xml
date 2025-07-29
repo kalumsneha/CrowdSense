@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CrowdSense</string>
+    <string name="title_activity_maps">Crowd Sense</string>
+    <string-array name="congestion_levels">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+</resources>

@@ -663,7 +663,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         return wifiInfo?.ssid?.removePrefix("\"")?.removeSuffix("\"") ?: "Unknown"
     }
 
-    private fun getCurrentLocation(callback: (Location?) -> Unit) {
+    /*private fun getCurrentLocation(callback: (Location?) -> Unit) {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -682,7 +682,43 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             override fun onProviderEnabled(provider: String) {}
             override fun onProviderDisabled(provider: String) {}
         }, null)
+    }*/
+
+
+    private fun getCurrentLocation(callback: (Location?) -> Unit) {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            callback(null)
+            return
+        }
+
+        val timeoutMillis = 5000L // 5 seconds timeout
+        val provider = LocationManager.GPS_PROVIDER
+
+        val listener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                handler.removeCallbacksAndMessages(null) // cancel timeout
+                locationManager.removeUpdates(this)
+                callback(location)
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+
+        // Start location request
+        locationManager.requestSingleUpdate(provider, listener, null)
+
+        // Set up timeout fallback
+        handler.postDelayed({
+            locationManager.removeUpdates(listener)
+            callback(null) // Fallback: no location
+        }, timeoutMillis)
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
